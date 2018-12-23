@@ -9,15 +9,15 @@
 		tr {
 			height: 2em;
 		}
-		tr td:nth-child(odd), tr th:nth-child(odd)  {
+		/*tr td:nth-child(odd), tr th:nth-child(odd)  {
 			background: #dddddd;
 		}
 		tr td:nth-child(even), tr th:nth-child(even) {
 			background: #eeeeee;
-		}
-		tr:nth-child(odd) td {
+		}*/
+		/*tr:nth-child(odd) td {
 			filter: brightness(85%);
-		}
+		}*/
 		tr:nth-child(4n-2) td {
 			border-top: 2px solid black;
 		}
@@ -34,7 +34,7 @@
 	<div id="content"></div>
 	<script type="text/javascript" charset="utf-8">
 		function percentage(num) {
-			return parseFloat(Math.round(num * 10000) / 100).toFixed(2) + " %";
+			return parseFloat(Math.round(num * 100)).toFixed(0) + " %";
 		}
 
 		function graphic(name) {
@@ -62,6 +62,50 @@
 					crel("th", graphic("unit/unit_knight")),
 					crel("th", graphic("unit/unit_snob")),
 					crel("th", graphic("unit/unit_militia")),
+				)
+			);
+		}
+
+		function getColorForPercentage(percent) {
+			var percentColors = [
+			    { percent: 0.0, color: { r: 0xff, g: 0x00, b: 0 } },
+			    { percent: 0.4, color: { r: 0xff, g: 0xff, b: 0 } },
+			    { percent: 0.6, color: { r: 0x00, g: 0xff, b: 0 } },
+			    { percent: 0.8, color: { r: 0xff, g: 0xff, b: 0 } }, 
+			    { percent: 1.0, color: { r: 0xff, g: 0x00, b: 0 } } ];
+		    for (var i = 1; i < percentColors.length - 1; i++) {
+		    	if (percent < percentColors[i].percent) {
+		    		break;
+	    		}
+    		}
+
+    		var lower = percentColors[i - 1];
+		    var upper = percentColors[i];
+		    var range = upper.percent - lower.percent;
+		    var rangePct = (percent - lower.percent) / range;
+		    var pctLower = 1 - rangePct;
+		    var pctUpper = rangePct;
+		    var color = {
+		        r: Math.floor(lower.color.r * pctLower + upper.color.r * pctUpper),
+		        g: Math.floor(lower.color.g * pctLower + upper.color.g * pctUpper),
+		        b: Math.floor(lower.color.b * pctLower + upper.color.b * pctUpper)
+		    };
+		    return 'rgb(' + [color.r, color.g, color.b].join(',') + ')';
+		    // or output as hex if preferred
+		}  
+
+		function fillGauge(percent) {
+			return crel("div", 
+				{style: "position:relative; height: 0; width:100%;"},
+				crel("div", 
+					{style: "position:absolute; z-index: -2; background: #eeeeee; height:20px; width:100%;"}
+				),
+				crel("div", 
+					{style: "position:absolute; z-index: -1; background: " + getColorForPercentage(percent) + "; height:20px; width:" + percent*100 + "%;"}
+				),
+				crel("span", 
+					{style: "z-index: 99999999999 !important;"}, 
+					percentage(percent)
 				)
 			);
 		}
@@ -114,18 +158,28 @@
 								village.units[0].map(v => crel("td", v)),
 								),
 							crel("tr", 
-								crel("td", percentage(village.ressources.wood / capacity)),
-								crel("td", percentage(village.ressources.stone / capacity)),
-								crel("td", percentage(village.ressources.iron / capacity)),
+								crel("td", fillGauge(village.ressources.wood / capacity)),
+								crel("td", fillGauge(village.ressources.stone / capacity)),
+								crel("td", fillGauge(village.ressources.iron / capacity)),
 								crel("td"),
 								crel("td", "Im Dorf"), village.units[1].map(v => crel("td", v))),
 							crel("tr", 
-								crel("td", { rowspan: 2}, Math.round(totalWood / totalCapacity * capacity - village.ressources.wood)),
-								crel("td", { rowspan: 2}, Math.round(totalStone / totalCapacity * capacity - village.ressources.stone)),
-								crel("td", { rowspan: 2}, Math.round(totalIron / totalCapacity * capacity - village.ressources.iron)),
-								crel("td", { rowspan: 2}),
-								crel("td", "auswärts"), village.units[2].map(v => crel("td", v))),
-							crel("tr", crel("td", "unterwegs"), village.units[3].map(v => crel("td", v)))
+								crel("td", Math.round(totalWood / totalCapacity * capacity - village.ressources.wood)),
+								crel("td", Math.round(totalStone / totalCapacity * capacity - village.ressources.stone)),
+								crel("td", Math.round(totalIron / totalCapacity * capacity - village.ressources.iron)),
+								crel("td"),
+								crel("td", "auswärts"), 
+								village.units[2].map(v => crel("td", v))),
+							crel("tr", 
+								crel("td", 
+									{ colspan: 4, style: "text-align: left;" },
+									crel("a",
+										{ href: "https://de161.die-staemme.de/game.php?screen=market&mode=send&target=" + village.id },
+										"send ressources"
+									)
+								),
+								crel("td", "unterwegs"), 
+								village.units[3].map(v => crel("td", v)))
 							);
 					}
 
