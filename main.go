@@ -16,7 +16,7 @@ type data struct {
 }
 
 type village struct {
-	Id         int
+	ID         int
 	Ressources ressources
 	Units      units
 }
