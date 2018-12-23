@@ -35,12 +35,25 @@
 	<script type="text/javascript" charset="utf-8">
 		function update() {
 			setTimeout(update, 5000);
-			fetch("/data")
+			let data = fetch("/data")
 				.then(resp => {
 					if (!resp.ok)
 						throw new Error(resp.statusText);
 
 					return resp.json();
+				});
+			let buildings = fetch("/data/buildings")
+				.then(resp => {
+					if(!resp.ok)
+						throw new Error(resp.statusText);
+
+					return resp.json();
+				});
+			Promise.all([data, buildings])
+				.then(values => {
+					let data = values[0];
+					data.buildings = values[1];
+					return data;
 				})
 				.then(data => {
 					let content = document.getElementById("content");
