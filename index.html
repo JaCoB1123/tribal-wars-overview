@@ -33,6 +33,39 @@
 <body>
 	<div id="content"></div>
 	<script type="text/javascript" charset="utf-8">
+		function percentage(num) {
+			return parseFloat(Math.round(num * 10000) / 100).toFixed(2) + " %";
+		}
+
+		function graphic(name) {
+			return crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/" + name + ".png"});
+		}
+
+		function reset(content) {
+			content.innerHTML = "";
+			crel(content, 
+				crel("tr",
+					crel("th", "Village"),
+					crel("th", graphic("holz")),
+					crel("th", graphic("lehm")),
+					crel("th", graphic("eisen")),
+					crel("th", graphic("buildings/storage")),
+					crel("th", ""),
+					crel("th", graphic("unit/unit_spear")),
+					crel("th", graphic("unit/unit_sword")),
+					crel("th", graphic("unit/unit_axe")),
+					crel("th", graphic("unit/unit_spy")),
+					crel("th", graphic("unit/unit_light")),
+					crel("th", graphic("unit/unit_heavy")),
+					crel("th", graphic("unit/unit_ram")),
+					crel("th", graphic("unit/unit_catapult")),
+					crel("th", graphic("unit/unit_knight")),
+					crel("th", graphic("unit/unit_snob")),
+					crel("th", graphic("unit/unit_militia")),
+				)
+			);
+		}
+ 
 		function update() {
 			setTimeout(update, 5000);
 			let data = fetch("/data")
@@ -57,89 +90,59 @@
 				})
 				.then(data => {
 					let content = document.getElementById("content");
-					content.innerHTML = "";
-					crel(content, 
-						crel("tr",
-							crel("th", "Village"),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/holz.png"})
-							),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/lehm.png"})
-							),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/eisen.png"})
-							),
-							crel("th", ""),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_spear.png"})
-							),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_sword.png"})
-							),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_axe.png"})
-							),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_spy.png"})
-							),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_light.png"})
-							),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_heavy.png"})
-							),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_ram.png"})
-							),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_catapult.png"})
-							),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_knight.png"})
-							),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_snob.png"})
-							),
-							crel("th", 
-								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_militia.png"})
-							),
-						)
-					);
+					reset(content);
+
+					let keys = Object.keys(data.villages);
+					let totalWood = keys.reduce((sum, key) => sum + data.villages[key].ressources.wood, 0);
+					let totalStone = keys.reduce((sum, key) => sum + data.villages[key].ressources.stone, 0);
+					let totalIron = keys.reduce((sum, key) => sum + data.villages[key].ressources.iron, 0);
+					let totalCapacity = keys.reduce((sum, key) => sum + data.buildings.storage.capacity[data.villages[key].buildings.storage-1], 0);	
 					for (let i in data.villages) {
 						let village = data.villages[i];
 
+						let capacity = data.buildings.storage.capacity[village.buildings.storage-1];
 						crel(content,
 							crel("tr",
 								crel("td", { rowspan: 4}, 
 									crel("a", {href: 'https://de161.die-staemme.de/game.php?screen=overview&village='+village.id}, village.name)
 								),
-								crel("td", { rowspan: 4}, JSON.stringify(village.ressources.wood)),
-								crel("td", { rowspan: 4}, JSON.stringify(village.ressources.stone)),
-								crel("td", { rowspan: 4}, JSON.stringify(village.ressources.iron)),
+								crel("td", village.ressources.wood),
+								crel("td", village.ressources.stone),
+								crel("td", village.ressources.iron),
+								crel("td", capacity),
 								crel("td", "eigene"),
 								village.units[0].map(v => crel("td", v)),
 								),
-							crel("tr", crel("td", "Im Dorf"), village.units[1].map(v => crel("td", v))),
-							crel("tr", crel("td", "auswärts"), village.units[2].map(v => crel("td", v))),
+							crel("tr", 
+								crel("td", percentage(village.ressources.wood / capacity)),
+								crel("td", percentage(village.ressources.stone / capacity)),
+								crel("td", percentage(village.ressources.iron / capacity)),
+								crel("td"),
+								crel("td", "Im Dorf"), village.units[1].map(v => crel("td", v))),
+							crel("tr", 
+								crel("td", { rowspan: 2}, Math.round(totalWood / totalCapacity * capacity - village.ressources.wood)),
+								crel("td", { rowspan: 2}, Math.round(totalStone / totalCapacity * capacity - village.ressources.stone)),
+								crel("td", { rowspan: 2}, Math.round(totalIron / totalCapacity * capacity - village.ressources.iron)),
+								crel("td", { rowspan: 2}),
+								crel("td", "auswärts"), village.units[2].map(v => crel("td", v))),
 							crel("tr", crel("td", "unterwegs"), village.units[3].map(v => crel("td", v)))
 							);
 					}
-					let keys = Object.keys(data.villages);
 
 					function sumUnit(type) {
 						return keys.reduce((sum, key) => {
 							let units = data.villages[key].units;
 							return sum + units[0][type] + units[2][type] + units[3][type];
 						}, 0);
-					}
+					}				
 
 					crel(content,
 						crel("tr",
 							crel("th", "Total"),
-							crel("th", keys.reduce((sum, key) => sum + data.villages[key].ressources.wood, 0)),
-							crel("th", keys.reduce((sum, key) => sum + data.villages[key].ressources.stone, 0)),
-							crel("th", keys.reduce((sum, key) => sum + data.villages[key].ressources.iron, 0)),
+							crel("th", totalWood),
+							crel("th", totalStone),
+							crel("th", totalIron),
+							crel("th", totalCapacity),
 							crel("th", "eigene"),
 							[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(type => crel("th", sumUnit(type))),
 						)
