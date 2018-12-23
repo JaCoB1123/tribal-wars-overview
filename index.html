@@ -3,11 +3,30 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/crel/3.1.0/crel.js" type="text/javascript" charset="utf-8"></script>
 	<style type="text/css" media="screen">
 		td, th {
-			padding: 0 10px;
+			padding: 0 5px;
 			text-align: right;
 		}
 		tr {
 			height: 2em;
+		}
+		tr td:nth-child(odd), tr th:nth-child(odd)  {
+			background: #dddddd;
+		}
+		tr td:nth-child(even), tr th:nth-child(even) {
+			background: #eeeeee;
+		}
+		tr:nth-child(odd) td {
+			filter: brightness(85%);
+		}
+		tr:nth-child(4n-2) td {
+			border-top: 2px solid black;
+		}
+		tr th {
+			filter: brightness(120%) !important;
+		}
+		a {
+			text-decoration: none;
+			color: darkorange;
 		}
 	</style>
 </head>
@@ -27,51 +46,53 @@
 					let content = document.getElementById("content");
 					content.innerHTML = "";
 					crel(content, 
-						crel("th", "Village"),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/holz.png"})
-						),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/lehm.png"})
-						),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/eisen.png"})
-						),
-						crel("th", ""),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_spear.png"})
-						),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_sword.png"})
-						),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_axe.png"})
-						),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_spy.png"})
-						),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_light.png"})
-						),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_heavy.png"})
-						),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_ram.png"})
-						),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_catapult.png"})
-						),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_knight.png"})
-						),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_snob.png"})
-						),
-						crel("th", 
-							crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_militia.png"})
-						),
-						);
+						crel("tr",
+							crel("th", "Village"),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/holz.png"})
+							),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/lehm.png"})
+							),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/eisen.png"})
+							),
+							crel("th", ""),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_spear.png"})
+							),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_sword.png"})
+							),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_axe.png"})
+							),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_spy.png"})
+							),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_light.png"})
+							),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_heavy.png"})
+							),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_ram.png"})
+							),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_catapult.png"})
+							),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_knight.png"})
+							),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_snob.png"})
+							),
+							crel("th", 
+								crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/unit/unit_militia.png"})
+							),
+						)
+					);
 					for (let i in data.villages) {
 						let village = data.villages[i];
 
@@ -101,13 +122,15 @@
 					}
 
 					crel(content,
-						crel("th", "Total"),
-						crel("th", keys.reduce((sum, key) => sum + data.villages[key].ressources.wood, 0)),
-						crel("th", keys.reduce((sum, key) => sum + data.villages[key].ressources.stone, 0)),
-						crel("th", keys.reduce((sum, key) => sum + data.villages[key].ressources.iron, 0)),
-						crel("th", "eigene"),
-						[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(type => crel("th", sumUnit(type))),
-						);
+						crel("tr",
+							crel("th", "Total"),
+							crel("th", keys.reduce((sum, key) => sum + data.villages[key].ressources.wood, 0)),
+							crel("th", keys.reduce((sum, key) => sum + data.villages[key].ressources.stone, 0)),
+							crel("th", keys.reduce((sum, key) => sum + data.villages[key].ressources.iron, 0)),
+							crel("th", "eigene"),
+							[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(type => crel("th", sumUnit(type))),
+						)
+					);
 				});
 		}
 		update();
