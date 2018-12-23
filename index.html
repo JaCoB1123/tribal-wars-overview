@@ -2,9 +2,30 @@
 <head>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/crel/3.1.0/crel.js" type="text/javascript" charset="utf-8"></script>
 	<style type="text/css" media="screen">
-		td, th {
+		body {margin: 0;}
+		#content {
+			float: left;
+			width: 50%;
+		}
+		#browser {
+			float: right;
+			width: 50%;
+		}
+		.clear {
+			clear:both;
+			display:none;
+		}
+		#browser iframe {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			border: none;
+		}
+		td {
 			padding: 0 5px;
 			text-align: right;
+			/*background: #eeeeee;*/
 		}
 		tr {
 			height: 2em;
@@ -15,15 +36,13 @@
 		tr td:nth-child(even), tr th:nth-child(even) {
 			background: #eeeeee;
 		}*/
-		/*tr:nth-child(odd) td {
-			filter: brightness(85%);
-		}*/
+		tr:nth-child(odd) td {
+		/*	background: #dddddd;*/
+		}
 		tr:nth-child(4n-2) td {
 			border-top: 2px solid black;
 		}
-		tr th {
-			filter: brightness(120%) !important;
-		}
+		
 		a {
 			text-decoration: none;
 			color: darkorange;
@@ -32,6 +51,10 @@
 </head>
 <body>
 	<div id="content"></div>
+	<div id="browser">
+		<iframe name="browser" src="about:blank"></iframe>
+	</div>
+	<div class="clear"></div>
 	<script type="text/javascript" charset="utf-8">
 		function percentage(num) {
 			return parseFloat(Math.round(num * 100)).toFixed(0) + " %";
@@ -148,7 +171,7 @@
 						crel(content,
 							crel("tr",
 								crel("td", { rowspan: 4}, 
-									crel("a", {href: 'https://de161.die-staemme.de/game.php?screen=overview&village='+village.id}, village.name)
+									crel("a", {href: 'https://de161.die-staemme.de/game.php?screen=overview&village='+village.id, target: "browser"}, village.name)
 								),
 								crel("td", village.ressources.wood),
 								crel("td", village.ressources.stone),
@@ -174,7 +197,7 @@
 								crel("td", 
 									{ colspan: 4, style: "text-align: left;" },
 									crel("a",
-										{ href: "https://de161.die-staemme.de/game.php?screen=market&mode=send&target=" + village.id },
+										{ href: "https://de161.die-staemme.de/game.php?screen=market&mode=send&target=" + village.id, target: "browser"},
 										"send ressources"
 									)
 								),
