@@ -53,7 +53,6 @@ func (l *myListener) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Fprintln(w, "{\"status\":\"success\"}")
 	} else if r.Method == "GET" {
-		fmt.Println(r.URL.Path)
 		if r.URL.Path == "/data" {
 			if l.current == nil || len(l.current) == 0 {
 				fmt.Fprint(w, "{}")
