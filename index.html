@@ -167,6 +167,9 @@
 						let village = data.villages[i];
 
 						let capacity = data.buildings.storage.capacity[village.buildings.storage-1];
+						let diffWood = Math.round(totalWood / totalCapacity * capacity - village.ressources.wood);
+						let diffStone = Math.round(totalStone / totalCapacity * capacity - village.ressources.stone);
+						let diffIron = Math.round(totalIron / totalCapacity * capacity - village.ressources.iron);
 						crel(content,
 							crel("tr",
 								crel("td", { rowspan: 4}, 
@@ -186,9 +189,9 @@
 								crel("td"),
 								crel("td", "Im Dorf"), village.units[1].map(v => crel("td", v))),
 							crel("tr", 
-								crel("td", Math.round(totalWood / totalCapacity * capacity - village.ressources.wood)),
-								crel("td", Math.round(totalStone / totalCapacity * capacity - village.ressources.stone)),
-								crel("td", Math.round(totalIron / totalCapacity * capacity - village.ressources.iron)),
+								crel("td", Math.abs(diffWood)>1000 ? diffWood : ""),
+								crel("td", Math.abs(diffStone)>1000 ? diffStone : ""),
+								crel("td", Math.abs(diffIron)>1000 ? diffIron : ""),
 								crel("td"),
 								crel("td", "auswärts"), 
 								village.units[2].map(v => crel("td", v))),
@@ -221,6 +224,16 @@
 							crel("th", totalCapacity),
 							crel("th", "eigene"),
 							[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(type => crel("th", sumUnit(type))),
+						)
+					);		
+
+					let avgRes = (totalWood+totalStone+totalIron)/3;
+					crel(content,
+						crel("tr",
+							crel("th", "To Average"),
+							crel("th", Math.round(avgRes-totalWood)),
+							crel("th", Math.round(avgRes-totalStone)),
+							crel("th", Math.round(avgRes-totalIron))
 						)
 					);
 				});
