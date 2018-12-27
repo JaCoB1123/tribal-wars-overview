@@ -118,15 +118,29 @@ function updateUnits(content, data) {
 			crel("tr", 
 				crel("td"),
 				crel("td", "unterwegs"), 
-				village.units[3].map(v => crel("td", v)))
+				village.units[3].map(v => crel("td", v))),
 			);
 	}			
 
+	let unitTypes = {
+		0: 1,
+		1: 1,
+		2: 1,
+		3: 2,
+		4: 4,
+		5: 6,
+		6: 5,
+		7: 8,
+		8: 10,
+		9: 100,
+		10: 0
+	};
 	crel(content,
 		crel("tr",
 			crel("th", "Total"),
 			crel("th", "eigene"),
-			[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(type => crel("th", sumUnit(data.villages, type))),
+			Object.keys(unitTypes).map(type => crel("th", sumUnit(data.villages, type))),
+			crel("th", Object.keys(unitTypes).reduce((sum, type) => sum + sumUnit(data.villages, type)*unitTypes[type], 0)),
 		)
 	);		
 }
