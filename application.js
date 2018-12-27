@@ -173,11 +173,15 @@ function updateProduction(content, data) {
 	let totalCapacity = keys.reduce((sum, key) => sum + data.buildings.storage.capacity[data.villages[key].buildings.storage-1], 0);	
 	for (let i in data.villages) {
 		let village = data.villages[i];
+		let incoming = village.trades.reduce((sum, key) => addRessources(sum, key), emptyRessources());
+		total = addRessources(total, incoming);
+	}
+
+	for (let i in data.villages) {
+		let village = data.villages[i];
 
 		let incoming = village.trades.reduce((sum, key) => addRessources(sum, key), emptyRessources());
 		
-		total = addRessources(total, incoming);
-
 		let future = addRessources(incoming, village.ressources);
 
 		let capacity = data.buildings.storage.capacity[village.buildings.storage-1];
