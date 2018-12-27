@@ -71,15 +71,15 @@ function getColorForPercentage(percent) {
 
 function fillGauge(percent) {
 	return crel("div", 
-		{style: "position:relative; height: 0; width:100%;"},
+		{style: "position:relative; left: -125%; height: 0; width:350%; text-align:center; "},
 		crel("div", 
-			{style: "position:absolute; z-index: -2; background: #eeeeee; height:20px; width:100%;"}
+			{style: "position:absolute; z-index: -2; background: #eeeeee; height:3px; width:100%;"}
 		),
 		crel("div", 
-			{style: "position:absolute; z-index: -1; background: " + getColorForPercentage(percent) + "; height:20px; width:" + percent*100 + "%;"}
+			{style: "position:absolute; z-index: -1; background: " + getColorForPercentage(percent) + "; height:3px; width:" + percent*100 + "%"}
 		),
 		crel("span", 
-			{style: "z-index: 99999999999 !important;"}, 
+			{style: "z-index: 99999999999 !important;padding-left: 10%;"}, 
 			percentage(percent)
 		)
 	);
@@ -169,9 +169,7 @@ function updateProduction(content, data) {
 	resetProduction(content);
 	let keys = Object.keys(data.villages);
 
-	let total = keys.reduce((sum, key) => {
-		return addRessources(sum, data.villages[key].ressources);
-	});
+	let total = keys.reduce((sum, key) => addRessources(sum, data.villages[key].ressources), emptyRessources());
 	let totalCapacity = keys.reduce((sum, key) => sum + data.buildings.storage.capacity[data.villages[key].buildings.storage-1], 0);	
 	for (let i in data.villages) {
 		let village = data.villages[i];

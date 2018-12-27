@@ -47,3 +47,7 @@ a {
 	text-decoration: none;
 	color: darkorange;
 }
+
+td {
+	min-width: 3em;
+}
