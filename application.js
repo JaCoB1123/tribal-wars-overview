@@ -109,7 +109,7 @@ function updateUnits(content, data) {
 				village.units[0].map(v => crel("td", v)),
 				),
 			crel("tr", 
-				crel("td", population - village.population),
+				crel("td", (population - village.population) + " (" + village.buildings.farm + ")"),
 				crel("td", "Im Dorf"), village.units[1].map(v => crel("td", v))),
 			crel("tr", 
 				crel("td", village.population + "/" + population),
