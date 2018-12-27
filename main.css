@@ -1,0 +1,49 @@
+body {margin: 0;}
+#wrapper {
+	float: left;
+	width: 820px;
+}
+#browser {
+	margin: 0 0 0 820px;
+}
+.clear {
+	clear:both;
+	display:none;
+}
+#browser iframe {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+td {
+	padding: 0 5px;
+	text-align: right;
+	/*background: #eeeeee;*/
+}
+tr {
+	height: 1.2em;
+}
+/*tr td:nth-child(odd), tr th:nth-child(odd)  {
+	background: #dddddd;
+}
+tr td:nth-child(even), tr th:nth-child(even) {
+	background: #eeeeee;
+}*/
+/*tr:nth-child(odd) td {
+	background: #dddddd;
+}*/
+tr.last td {
+	/*border-top: 2px solid black;*/
+	padding-bottom: 1em;
+}
+
+tr:nth-child(8n-2) td, tr:nth-child(8n-1) td, tr:nth-child(8n) td, tr:nth-child(8n+1) td {
+	/*background: none;*/
+}
+
+a {
+	text-decoration: none;
+	color: darkorange;
+}
