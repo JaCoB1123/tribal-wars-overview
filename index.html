@@ -136,6 +136,14 @@
 				)
 			);
 		}
+
+		function sumUnit(villages, type) {
+			let keys = Object.keys(villages);
+			return keys.reduce((sum, key) => {
+				let units = villages[key].units;
+				return sum + units[0][type] + units[2][type] + units[3][type];
+			}, 0);
+		}	
  
 		function update() {
 			setTimeout(update, 5000);
@@ -222,14 +230,7 @@
 								crel("td", "unterwegs"), 
 								village.units[3].map(v => crel("td", v)))
 							);
-					}
-
-					function sumUnit(type) {
-						return keys.reduce((sum, key) => {
-							let units = data.villages[key].units;
-							return sum + units[0][type] + units[2][type] + units[3][type];
-						}, 0);
-					}				
+					}			
 
 					crel(content,
 						crel("tr",
@@ -239,7 +240,7 @@
 							crel("th", totalIron),
 							crel("th", totalCapacity),
 							crel("th", "eigene"),
-							[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(type => crel("th", sumUnit(type))),
+							[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(type => crel("th", sumUnit(data.villages, type))),
 						)
 					);		
 
