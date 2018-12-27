@@ -40,12 +40,12 @@ func (l *myListener) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Unmarshal
-		var msg data
+		/*var msg data
 		err = json.Unmarshal(b, &msg)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
-		}
+		}*/
 
 		l.current = b
 
