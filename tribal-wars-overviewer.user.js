@@ -139,21 +139,19 @@
         try {
             let totals= {ressources: {wood:0, stone: 0, iron: 0}, units: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
             for(let id in villages) {
-            let village = villages[id];
-            totals.ressources.wood += village.ressources.wood;
-            totals.ressources.stone += village.ressources.stone;
-            totals.ressources.iron += village.ressources.iron;
+                let village = villages[id];
+                totals.ressources.wood += village.ressources.wood;
+                totals.ressources.stone += village.ressources.stone;
+                totals.ressources.iron += village.ressources.iron;
 
-            for(let t in village.units) {
-                if(t == 0) continue;
+                for(let t in village.units) {
+                    if(t == 0) continue;
 
-                totals.units = totals.units.map(function(c, i) {
-                    return c + village.units[t][i];
-                });
+                    totals.units = totals.units.map(function(c, i) {
+                        return c + village.units[t][i];
+                    });
+                }
             }
-        }
-        console.log(totals);
-        console.log(data);
         } catch(e) {
             console.log("invalid data");
         }
