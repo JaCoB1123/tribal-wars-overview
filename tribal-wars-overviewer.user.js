@@ -98,7 +98,12 @@
             }
         });
 
-        console.log(info);
+        if(info.wood > 0 || info.stone > 0 || info.iron > 0)
+        {
+            let village = villages[info.receiverVillage];
+            if(village == null) return;
+            village.trades.push(info);
+        }
     }
 
     GM.getValue("die_staemme", {}).then((data) => {
@@ -118,6 +123,12 @@
             parseBuildings(villages, e);
         });
 
+        if(window.location.href.indexOf("mode=trader") > -1) {
+            for(let id in villages) {
+                let village = villages[id];
+                village.trades = [];
+            }
+        }
         $("#trades_table tr").each(function(i, e) {
             // HEADER
             if(i == 0) return;
