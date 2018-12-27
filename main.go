@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -61,7 +61,7 @@ func (l *myListener) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		} else if r.URL.Path == "/data/buildings" {
 			http.ServeFile(w, r, "buildings.json")
 		} else {
-			http.ServeFile(w, r, "index.html")
+			http.ServeFile(w, r, r.URL.Path[1:])
 		}
 	}
 }
