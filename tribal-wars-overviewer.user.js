@@ -18,11 +18,13 @@
         return +element[0].innerText.replace('.', "");
     }
 
-    function parseRessources(villages, element) {
+    function parseProduction(villages, element) {
         let id = +$(element).find(".quickedit-vn")[0].attributes["data-id"].value;
         let village = villages[id] || {};
         let ressources = village.ressources || {};
         village.id = id;
+        let bh = $(element).find("td")[6].innerText;
+        village.population = +bh.split("/")[0];
         ressources.wood = parseNumber($(element).find(".wood"));
         ressources.stone = parseNumber($(element).find(".stone"));
         ressources.iron = parseNumber($(element).find(".iron"));
@@ -112,7 +114,7 @@
             // HEADER
             if(i == 0) return;
 
-            parseRessources(villages, e);
+            parseProduction(villages, e);
         });
 
         $("#units_table tbody").each(function(i, e) {
