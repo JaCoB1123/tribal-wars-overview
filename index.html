@@ -171,13 +171,20 @@
 					for (let i in data.villages) {
 						let village = data.villages[i];
 
+						let incomingWood = (village.trades || []).reduce((sum, key) => sum + key.wood, 0);
+						let incomingStone = (village.trades || []).reduce((sum, key) => sum + key.stone, 0);
+						let incomingIron = (village.trades || []).reduce((sum, key) => sum + key.iron, 0);	
+						totalWood += incomingWood;
+						totalStone += incomingStone;
+						totalIron += incomingIron;
+
 						let capacity = data.buildings.storage.capacity[village.buildings.storage-1];
-						let diffWood = Math.round(totalWood / totalCapacity * capacity - village.ressources.wood);
-						let diffStone = Math.round(totalStone / totalCapacity * capacity - village.ressources.stone);
-						let diffIron = Math.round(totalIron / totalCapacity * capacity - village.ressources.iron);
+						let diffWood = Math.round(totalWood / totalCapacity * capacity - (village.ressources.wood+incomingWood));
+						let diffStone = Math.round(totalStone / totalCapacity * capacity - (village.ressources.stone+incomingStone));
+						let diffIron = Math.round(totalIron / totalCapacity * capacity - (village.ressources.iron+incomingIron));
 						crel(content,
 							crel("tr",
-								crel("td", { rowspan: 4}, 
+								crel("td",
 									crel("a", {href: 'https://de161.die-staemme.de/game.php?screen=overview&village='+village.id, target: "browser"}, village.name)
 								),
 								crel("td", village.ressources.wood),
@@ -188,26 +195,30 @@
 								village.units[0].map(v => crel("td", v)),
 								),
 							crel("tr", 
-								crel("td", fillGauge(village.ressources.wood / capacity)),
-								crel("td", fillGauge(village.ressources.stone / capacity)),
-								crel("td", fillGauge(village.ressources.iron / capacity)),
+								crel("td", "eingehend"),
+								crel("td", incomingWood),
+								crel("td", incomingStone),
+								crel("td", incomingIron),
 								crel("td"),
 								crel("td", "Im Dorf"), village.units[1].map(v => crel("td", v))),
 							crel("tr", 
-								crel("td", Math.abs(diffWood)>1000 ? diffWood : ""),
-								crel("td", Math.abs(diffStone)>1000 ? diffStone : ""),
-								crel("td", Math.abs(diffIron)>1000 ? diffIron : ""),
+								crel("td"),
+								crel("td", fillGauge((village.ressources.wood+incomingWood) / capacity)),
+								crel("td", fillGauge((village.ressources.stone+incomingStone) / capacity)),
+								crel("td", fillGauge((village.ressources.iron+incomingIron) / capacity)),
 								crel("td"),
 								crel("td", "auswärts"), 
 								village.units[2].map(v => crel("td", v))),
 							crel("tr", 
-								crel("td", 
-									{ colspan: 4, style: "text-align: left;" },
+								crel("td", "soll"),
+								crel("td", Math.abs(diffWood)>1000 ? diffWood : ""),
+								crel("td", Math.abs(diffStone)>1000 ? diffStone : ""),
+								crel("td", Math.abs(diffIron)>1000 ? diffIron : ""),
+								crel("td",
 									crel("a",
 										{ href: "https://de161.die-staemme.de/game.php?screen=market&mode=send&target=" + village.id, target: "browser"},
-										"send ressources"
-									)
-								),
+										"send"
+									)),
 								crel("td", "unterwegs"), 
 								village.units[3].map(v => crel("td", v)))
 							);
