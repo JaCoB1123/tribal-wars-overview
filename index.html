@@ -38,9 +38,9 @@
 		/*tr:nth-child(odd) td {
 			background: #dddddd;
 		}*/
-		tr:nth-child(4n-2) td {
+		tr.last td {
 			/*border-top: 2px solid black;*/
-			padding-top: 1em;
+			padding-bottom: 1em;
 		}
 
 		tr:nth-child(8n-2) td, tr:nth-child(8n-1) td, tr:nth-child(8n) td, tr:nth-child(8n+1) td {
@@ -68,15 +68,11 @@
 			return crel("img", {src:"https://dsde.innogamescdn.com/8.152/39836/graphic/" + name + ".png"});
 		}
 
-		function reset(content) {
+		function resetUnits(content) {
 			content.innerHTML = "";
 			crel(content, 
 				crel("tr",
 					crel("th", "Village"),
-					crel("th", graphic("holz")),
-					crel("th", graphic("lehm")),
-					crel("th", graphic("eisen")),
-					crel("th", graphic("buildings/storage")),
 					crel("th", ""),
 					crel("th", graphic("unit/unit_spear")),
 					crel("th", graphic("unit/unit_sword")),
@@ -89,6 +85,19 @@
 					crel("th", graphic("unit/unit_knight")),
 					crel("th", graphic("unit/unit_snob")),
 					crel("th", graphic("unit/unit_militia")),
+				)
+			);
+		}
+
+		function resetProduction(content) {
+			content.innerHTML = "";
+			crel(content, 
+				crel("tr",
+					crel("th", "Village"),
+					crel("th", { colspan: 2}, graphic("holz")),
+					crel("th", { colspan: 2}, graphic("lehm")),
+					crel("th", { colspan: 2}, graphic("eisen")),
+					crel("th", graphic("buildings/storage")),
 				)
 			);
 		}
@@ -169,8 +178,46 @@
 				})
 				.then(data => {
 					let content = document.getElementById("content");
-					reset(content);
 
+        			if(window.location.href.indexOf("#units") > -1) {
+						resetUnits(content);
+						let keys = Object.keys(data.villages);
+						for (let i in data.villages) {
+							let village = data.villages[i];
+
+							crel(content,
+								crel("tr",
+									crel("td",
+										crel("a", {href: 'https://de161.die-staemme.de/game.php?screen=overview&village='+village.id, target: "browser"}, village.name)
+									),
+									crel("td", "eigene"),
+									village.units[0].map(v => crel("td", v)),
+									),
+								crel("tr", 
+									crel("td"),
+									crel("td", "Im Dorf"), village.units[1].map(v => crel("td", v))),
+								crel("tr", 
+									crel("td"),
+									crel("td", "auswärts"), 
+									village.units[2].map(v => crel("td", v))),
+								crel("tr", 
+									crel("td", "soll"),
+									crel("td", "unterwegs"), 
+									village.units[3].map(v => crel("td", v)))
+								);
+						}			
+
+						crel(content,
+							crel("tr",
+								crel("th", "Total"),
+								crel("th", "eigene"),
+								[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(type => crel("th", sumUnit(data.villages, type))),
+							)
+						);		
+return;
+        			}
+
+        			resetProduction(content);
 					let keys = Object.keys(data.villages);
 					let totalWood = keys.reduce((sum, key) => sum + data.villages[key].ressources.wood, 0);
 					let totalStone = keys.reduce((sum, key) => sum + data.villages[key].ressources.stone, 0);
@@ -196,51 +243,38 @@
 									crel("a", {href: 'https://de161.die-staemme.de/game.php?screen=overview&village='+village.id, target: "browser"}, village.name)
 								),
 								crel("td", village.ressources.wood),
-								crel("td", village.ressources.stone),
-								crel("td", village.ressources.iron),
-								crel("td", capacity),
-								crel("td", "eigene"),
-								village.units[0].map(v => crel("td", v)),
-								),
-							crel("tr", 
-								crel("td", "eingehend"),
-								crel("td", incomingWood),
-								crel("td", incomingStone),
-								crel("td", incomingIron),
-								crel("td"),
-								crel("td", "Im Dorf"), village.units[1].map(v => crel("td", v))),
-							crel("tr", 
-								crel("td"),
 								crel("td", fillGauge((village.ressources.wood+incomingWood) / capacity)),
+								crel("td", village.ressources.stone),
 								crel("td", fillGauge((village.ressources.stone+incomingStone) / capacity)),
+								crel("td", village.ressources.iron),
 								crel("td", fillGauge((village.ressources.iron+incomingIron) / capacity)),
+								crel("td", capacity)),
+							crel("tr", { class: "last"},
 								crel("td"),
-								crel("td", "auswärts"), 
-								village.units[2].map(v => crel("td", v))),
-							crel("tr", 
-								crel("td", "soll"),
+								crel("td", incomingWood > 0 ? incomingWood : ""),
 								crel("td", Math.abs(diffWood)>1000 ? diffWood : ""),
+								crel("td", incomingStone > 0 ? incomingStone : ""),
 								crel("td", Math.abs(diffStone)>1000 ? diffStone : ""),
+								crel("td", incomingIron > 0 ? incomingIron : ""),
 								crel("td", Math.abs(diffIron)>1000 ? diffIron : ""),
 								crel("td",
 									crel("a",
 										{ href: "https://de161.die-staemme.de/game.php?screen=market&mode=send&target=" + village.id, target: "browser"},
 										"send"
-									)),
-								crel("td", "unterwegs"), 
-								village.units[3].map(v => crel("td", v)))
+									))),
 							);
 					}			
 
 					crel(content,
 						crel("tr",
 							crel("th", "Total"),
+							crel("th"),
 							crel("th", totalWood),
+							crel("th"),
 							crel("th", totalStone),
+							crel("th"),
 							crel("th", totalIron),
 							crel("th", totalCapacity),
-							crel("th", "eigene"),
-							[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(type => crel("th", sumUnit(data.villages, type))),
 						)
 					);		
 
@@ -248,8 +282,11 @@
 					crel(content,
 						crel("tr",
 							crel("th", "To Average"),
+							crel("th"),
 							crel("th", Math.round(avgRes-totalWood)),
+							crel("th"),
 							crel("th", Math.round(avgRes-totalStone)),
+							crel("th"),
 							crel("th", Math.round(avgRes-totalIron))
 						)
 					);
